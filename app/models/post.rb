@@ -7,4 +7,5 @@ class Post < ActiveRecord::Base
   validates :description, presence: true  
   validates :title, presence: true, length: {minimum: 5}
   validates :url, presence: true, uniqueness: true 
+  has_many :votes, as: :voteable
 end 

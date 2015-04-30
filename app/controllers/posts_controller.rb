@@ -1,5 +1,5 @@
 class PostsController < ApplicationController
-  before_action :setup_post, only: [:show, :edit, :update ]
+  before_action :setup_post, only: [:show, :edit, :update, :vote ]
   before_action :require_user, except: [:index, :show]
   
   def index
@@ -36,6 +36,25 @@ class PostsController < ApplicationController
     else 
       render :edit
     end  
+  end
+
+  def vote
+    @post.vote = Vote.new(value: params[:value])
+
+    if @post.vote.save 
+      flash[:notice] = 'Vote added.'
+      redirect  
+    else
+      render :index
+    end
+    #create vote object with values from form submission 
+    #if vote save 
+      #flash?
+      #redirect to somewhere 
+    #else 
+      #flash error message
+      #stay on page
+      #
   end
 
   private
