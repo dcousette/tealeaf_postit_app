@@ -1,9 +1,9 @@
 class PostsController < ApplicationController
   before_action :setup_post, only: [:show, :edit, :update, :vote ]
-  before_action :require_user, except: [:index, :show]
+  before_action :require_user, except: [:index, :show, :vote]
   
   def index
-    @posts = Post.all 
+    @posts = Post.all.sort_by{|x| x.total_votes}.reverse
   end
 
   def show
@@ -39,22 +39,9 @@ class PostsController < ApplicationController
   end
 
   def vote
-    @post.vote = Vote.new(value: params[:value])
-
-    if @post.vote.save 
-      flash[:notice] = 'Vote added.'
-      redirect  
-    else
-      render :index
-    end
-    #create vote object with values from form submission 
-    #if vote save 
-      #flash?
-      #redirect to somewhere 
-    #else 
-      #flash error message
-      #stay on page
-      #
+    Vote.create(voteable: @post, creator: current_user, value: params[:value])
+    flash[:notice] = 'Your vote was counted'
+    redirect_to :back  
   end
 
   private
