@@ -39,14 +39,19 @@ class PostsController < ApplicationController
   end
 
   def vote
-    vote = Vote.create(voteable: @post, creator: current_user, value: params[:value])
+    @vote = Vote.create(voteable: @post, creator: current_user, value: params[:value])
     
-    if vote.valid?
-       flash[:notice] = 'Your vote was counted'
-    else 
-      flash[:error] = "You can only vote once!"
+    respond_to do |format|
+      format.html do 
+        if @vote.valid?
+          flash[:notice] = 'Your vote was counted'
+        else 
+          flash[:error] = "You can only vote once!"
+        end
+        redirect_to :back
+      end
+      format.js # we can do this because of rails flavored ajax instead of format js block 
     end
-    redirect_to :back  
   end
 
   private
@@ -56,6 +61,6 @@ class PostsController < ApplicationController
     end
 
     def setup_post
-      @post = Post.find(params[:id])
+      @post = Post.find_by(slug: params[:id])
     end 
 end
