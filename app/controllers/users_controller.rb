@@ -36,7 +36,7 @@ class UsersController < ApplicationController
   private 
 
   def user_params
-    params.require(:user).permit(:username, :password)
+    params.require(:user).permit(:username, :password, :time_zone)
   end
 
   def setup_user
@@ -44,7 +44,7 @@ class UsersController < ApplicationController
   end
 
   def require_same_user #only allow edit or update your own profile 
-    if @current_user != @user 
+    if current_user != @user 
       flash[:error] = "You can't do that!"
       redirect_to root_path 
     end
